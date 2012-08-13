@@ -1,22 +1,24 @@
-/*
-  Google HTML5 slides template
+/* Original Slide Template from http://code.google.com/p/io-2011-slides/ */
 
-  Authors: Luke Mahé (code)
-           Marcin Wichary (code and design)
+// Take care of browser prefixes.
+window.URL = window.URL ? window.URL :
+             window.webkitURL ? window.webkitURL : null;
 
-           Dominic Mazzoni (browser compatibility)
-           Charles Chen (ChromeVox support)
-           
-           Petr Hosek (fixes and improvements)
+window.BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.BlobBuilder;
 
-  URL: http://github.com/petrh/html5slides
-*/
+window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
-var PERMANENT_URL_PREFIX = 'http://raw.github.com/petrh/html5slides/master/';
+window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
+                               window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
 
-var SLIDE_CLASSES = ['far-past', 'past', 'current', 'next', 'far-next'];
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
-var PM_TOUCH_SENSITIVITY = 15;
+//const PERMANENT_URL_PREFIX = 'http://raw.github.com/petrh/html5slides/master/';
+const PERMANENT_URL_PREFIX = '../';
+
+const SLIDE_CLASSES = ['far-past', 'past', 'current', 'next', 'far-next'];
+
+const PM_TOUCH_SENSITIVITY = 15;
 
 var curSlide;
 
@@ -211,6 +213,7 @@ function updateSlides() {
   }, 301);
 
   enableSlideFrames(curSlide - 1);
+  enableSlideFrames(curSlide + 1);
   enableSlideFrames(curSlide + 2);
 
   if (isChromeVoxActive()) {
@@ -370,8 +373,7 @@ function disableFrame(frame) {
 
 function enableFrame(frame) {
   var src = frame._src;
-
-  if (frame.src != src && src != 'about:blank') {
+  if (src && frame.src != src) {
     frame.src = src;
   }
 };
@@ -527,6 +529,14 @@ function handleBodyKeyDown(event) {
       }
       event.preventDefault();
       break;
+
+    case 78: // N
+      document.body.classList.toggle('with-notes');
+      break;
+
+    case 27: // ESC
+      document.body.classList.remove('with-notes');
+      break;
   }
 };
 
@@ -553,15 +563,6 @@ function addPrettify() {
   document.body.appendChild(el);
 };
 
-function addFontStyle() {
-  var el = document.createElement('link');
-  el.rel = 'stylesheet';
-  el.type = 'text/css';
-  el.href = 'http://fonts.googleapis.com/css?family=' +
-            'Open+Sans:regular,semibold,italic,italicsemibold|Droid+Sans+Mono';
-
-  document.body.appendChild(el);
-};
 
 function addGeneralStyle() {
   var el = document.createElement('link');
@@ -595,9 +596,6 @@ function makeBuildLists() {
 function handleDomLoaded() {
   slideEls = document.querySelectorAll('section.slides > article');
 
-  setupFrames();
-
-  addFontStyle();
   addGeneralStyle();
   addPrettify();
   addEventListeners();
@@ -605,7 +603,13 @@ function handleDomLoaded() {
   updateSlides();
 
   setupInteraction();
+  setupFrames();
   makeBuildLists();
+
+  for (var i = 0, slide; slide = slideEls[i]; ++i) {
+    slide.dataset.slideNum = i + 1;
+    slide.dataset.totalSlides = slideEls.length;
+  }
 
   document.body.classList.add('loaded');
 };
@@ -613,33 +617,7 @@ function handleDomLoaded() {
 function initialize() {
   getCurSlideFromHash();
 
-  if (window['_DEBUG']) {
-    PERMANENT_URL_PREFIX = '../';
-  }
-
-  if (window['_DCL']) {
-    handleDomLoaded();
-  } else {
-    document.addEventListener('DOMContentLoaded', handleDomLoaded, false);
-  }
+  document.addEventListener('DOMContentLoaded', handleDomLoaded, false);
 }
 
-// If ?debug exists then load the script relative instead of absolute
-if (!window['_DEBUG'] && document.location.href.indexOf('?debug') !== -1) {
-  document.addEventListener('DOMContentLoaded', function() {
-    // Avoid missing the DomContentLoaded event
-    window['_DCL'] = true
-  }, false);
-
-  window['_DEBUG'] = true;
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = '../slides.js';
-  var s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(script, s);
-
-  // Remove this script
-  s.parentNode.removeChild(s);
-} else {
-  initialize();
-}
+initialize();
