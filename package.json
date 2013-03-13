@@ -1,0 +1,28 @@
+{
+  "name": "html5slides",
+  "version": "0.0.1",
+  "description": "HTML5 slide template for Google I/O 2012",
+  "main": "app.js",
+  "dependencies": {
+    "express": ">=3.0.0",
+    "nib": ">0.9.0",
+    "socket.io" : "0.9.10",
+    "stylus": ">=0.32.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/petrh/html5slides.git"
+  },
+  "keywords": [
+    "slides",
+    "html5",
+    "presentation",
+    "tool",
+    "remote"
+  ],
+  "author": "Petr Hosek",
+  "license": "Apache License 2.0"
+}
