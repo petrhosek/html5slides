@@ -317,7 +317,10 @@ SlideDeck.prototype.loadConfig_ = function(config) {
   }
 
   if (settings.title) {
-    document.title = settings.title.replace(/<br\/?>/, ' ') + ' - 530 Software Engineering Practice';
+    document.title = settings.title.replace(/<br\/?>/, ' ');
+    if (settings.eventTitle) {
+      document.title +=  ' - ' + settings.eventTitle;
+    }
     document.querySelector('[data-config-title]').innerHTML = settings.title;
   }
 
@@ -365,7 +368,11 @@ SlideDeck.prototype.loadConfig_ = function(config) {
 
     var dataConfigPresenter = document.querySelector('[data-config-presenter]');
     if (dataConfigPresenter) {
-      document.querySelector('[data-config-presenter]').innerHTML = html;
+      dataConfigPresenter.innerHTML = html;
+      if (settings.eventTitle) {
+        dataConfigPresenter.innerHTML = dataConfigPresenter.innerHTML + '<br>' +
+                                        settings.eventTitle;
+      }
     }
   }
 
