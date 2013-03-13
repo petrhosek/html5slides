@@ -7,28 +7,26 @@ var express = require('express')
 
 app.configure(function() {
   app.use(stylus.middleware({
-      src: __dirname + '/theme'
+      src: __dirname + '/theme',
+      dest: __dirname + '/public',
       compile: function (str, path) {
         return stylus(str)
           .set('filename', path)
           .set('compress', true)
-          .use(nib())
-          .import('nib');
+          .set('warn', true)
+          .use(nib());
       }
   }));
-  app.use(express.static(__dirname + '/'));
+  app.use(express.static(__dirname + '/public'));
 });
 
-server.listen(3000);
-
 app.get('/', function(req, res) {
-  res.sendfile(__dirname + '/index.html');
+  res.sendfile(__dirname + '/template.html');
 });
 
 var hash = false;
 
 io.sockets.on('connection', function (socket) {
-  socket.on('event', function(data) {
   socket.on('message', function(type, data) {
     console.log(data);
     socket.broadcast.emit('event', data);
@@ -63,4 +61,12 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.to(hash).emit('sync');
     io.sockets.in(hash).emit('sync');
   });
+});
+
+/*
+ * Start server
+ */
+
+server.listen(process.env.PORT || 3000, function () {
+  console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
 });
