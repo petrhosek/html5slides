@@ -1,7 +1,7 @@
 {
   "name": "html5slides",
   "version": "0.0.1",
-  "description": "HTML5 slide template for Google I/O 2012",
+  "description": "HTML5 slide template for Google I/O 2012/2013",
   "main": "app.js",
   "dependencies": {
     "express": ">=3.0.0",
